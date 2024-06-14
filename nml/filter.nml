@@ -1,0 +1,5 @@
+&filter
+    filterlen  = 
+    filtername = 'simple'
+&END
+
