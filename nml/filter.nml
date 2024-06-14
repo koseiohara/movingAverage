@@ -1,5 +1,5 @@
 &filter
-    filterlen  = 
+    filterlen = 61
     filtername = 'simple'
 &END
 

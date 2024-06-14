@@ -1,5 +1,5 @@
 &files
-    input_fname  = 
-    output_fname = 
+    input_fname = '/mnt/hail8/kosei/JRA3Q/ALL/JRA3Q_1969_2022/JRA3Q_PRES_1969_2022_ALL.bin'
+    output_fname = '../output/JRA3Q_PRES_1969_2022_ALL_movave.dat'
 &END
 
