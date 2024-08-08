@@ -12,7 +12,7 @@ module globals
     character(32), save :: filtername
 
     integer, save :: varnum
-    integer, save :: input_initialRecord
+    integer, save :: irec_init
     integer, save :: tnum
 
     character(128), save :: input_fname

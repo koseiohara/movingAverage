@@ -1,8 +1,8 @@
 module namelist
 
-    use globals, only : nx, ny, nz                       , &
-                      & filterlen, filtername            , &
-                      & varnum, input_initialRecord, tnum, &
+    use globals, only : nx, ny, nz             , &
+                      & filterlen, filtername  , &
+                      & varnum, irec_init, tnum, &
                       & input_fname, output_fname
 
     implicit none
@@ -14,18 +14,12 @@ module namelist
 
 
     subroutine read_nml()
-        integer :: grid_unit
-        integer :: filter_unit
-        integer :: recinfo_unit
-        integer :: files_unit
-        character(128), parameter :: grid_fname   ='../nml/grid.nml'
-        character(128), parameter :: filter_fname ='../nml/filter.nml'
-        character(128), parameter :: recinfo_fname='../nml/recinfo.nml'
-        character(128), parameter :: files_fname  ='../nml/files.nml'
+
+        integer, parameter :: nml_unit = 5
 
         namelist / grid / nx, ny, nz
         namelist / filter / filterlen, filtername
-        namelist / recinfo / varnum, input_initialRecord, tnum
+        namelist / recinfo / varnum, irec_init, tnum
         namelist / files / input_fname, output_fname
 
         nx = 0
@@ -35,35 +29,19 @@ module namelist
         filterlen  = 0
         filtername = ''
 
-        varnum              = 0
-        input_initialRecord = 0
-        tnum                = 0
+        varnum    = 0
+        irec_init = 0
+        tnum      = 0
 
         input_fname  = ''
         output_fname = ''
 
 
-        call open_nml(grid_unit, &     !! OUT
-                    & grid_fname )     !! IN
+        read(nml_unit, nml=  files)
+        read(nml_unit, nml=recinfo)
+        read(nml_unit, nml=   grid)
+        read(nml_unit, nml= filter)
 
-        call open_nml(filter_unit, &   !! OUT
-                    & filter_fname )   !! IN
-
-        call open_nml(recinfo_unit, &  !! OUT
-                    & recinfo_fname )  !! IN
-
-        call open_nml(files_unit, &    !! OUT
-                    & files_fname )    !! IN
-
-        read(   grid_unit, nml=   grid)
-        read( filter_unit, nml= filter)
-        read(recinfo_unit, nml=recinfo)
-        read(  files_unit, nml=  files)
-
-        close(   grid_unit)
-        close( filter_unit)
-        close(recinfo_unit)
-        close(  files_unit)
 
         call checker()
 
@@ -176,12 +154,12 @@ module namelist
             ERROR STOP
         endif
 
-        if (input_initialRecord <= 0) then
+        if (irec_init<= 0) then
             write(*,*)
             write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid input_initialRecord value in namelist'
-            write(*,'(a)')    '|   input_initialRecord must be more than 0'
-            write(*,'(a,i0)') '|   Input : input_initialRecord=', input_initialRecord
+            write(*,'(a)')    '|   Invalid irec_init value in namelist'
+            write(*,'(a)')    '|   irec_init must be more than 0'
+            write(*,'(a,i0)') '|   Input : irec_init=', irec_init
             write(*,'(a)')    '-----------------------------------------------------------'
 
             ERROR STOP
@@ -236,7 +214,7 @@ module namelist
         write(*,'(a)')    'FILTER NAME   : ' // trim(filtername)
         write(*,'(a)')    '---'
         write(*,'(a,i0)') 'NUMBER OF VARIABLES     : ', varnum
-        write(*,'(a,i0)') 'INITIAL RECORD OF INPUT : ', input_initialRecord
+        write(*,'(a,i0)') 'INITIAL RECORD OF INPUT : ', irec_init
         write(*,'(a,i0)') 'NUMBER OF TIME STEPS    : ', tnum
         write(*,'(a)')    '---'
         write(*,*)

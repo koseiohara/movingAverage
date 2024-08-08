@@ -1,13 +1,13 @@
 module movave
 
-    use fileio       , only : finfo                            , &
-                            & fopen ,fclose, fread, fwrite     , &
+    use fileio       , only : finfo                       , &
+                            & fopen ,fclose, fread, fwrite, &
                             & reset_record, get_record
-    use debugger     , only : debug_open, debug_close          , &
+    use debugger     , only : debug_open, debug_close     , &
                             & debug_write, debug_linebreak
-    use globals      , only : kp, nx, ny, nz                   , &
-                            & filterlen, filtername            , &
-                            & varnum, input_initialRecord, tnum, &
+    use globals      , only : kp, nx, ny, nz              , &
+                            & filterlen, filtername       , &
+                            & varnum, irec_init, tnum     , &
                             & input_fname, output_fname
     use movave_filter, only : filter, get_edgeCorrector
 
@@ -28,19 +28,19 @@ module movave
         type(finfo) :: input_file
         type(finfo) :: output_file
 
-        call fopen(ftype  =input_file         , &  !! OUT
-                 & fname  =input_fname        , &  !! IN
-                 & action ='read'             , &  !! IN
-                 & recl   =kp*nx*ny*nz        , &  !! IN
-                 & record =input_initialRecord, &  !! IN
-                 & recstep=0                    )  !! IN
+        call fopen(ftype  =input_file  , &  !! OUT
+                 & fname  =input_fname , &  !! IN
+                 & action ='read'      , &  !! IN
+                 & recl   =kp*nx*ny*nz , &  !! IN
+                 & record =irec_init   , &  !! IN
+                 & recstep=0             )  !! IN
         
-        call fopen(ftype  =output_file        , &  !! OUT
-                 & fname  =output_fname       , &  !! IN
-                 & action ='write'            , &  !! IN
-                 & recl   =kp*nx*ny*nz        , &  !! IN
-                 & record =1                  , &  !! IN
-                 & recstep=1                    )  !! IN
+        call fopen(ftype  =output_file , &  !! OUT
+                 & fname  =output_fname, &  !! IN
+                 & action ='write'     , &  !! IN
+                 & recl   =kp*nx*ny*nz , &  !! IN
+                 & record =1           , &  !! IN
+                 & recstep=1             )  !! IN
 
         call debug_open(debug_rec_unit, &  !! OUT
                       & debug_rec_fname )  !! IN
