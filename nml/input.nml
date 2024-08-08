@@ -1,0 +1,25 @@
+&files
+    input_fname = '/mnt/jet11/kosei/JRA/JRA3Q/ALL/JRA3Q_1975_2023/JRA3Q_1975_2023_ALL_PRES.bin'
+    !output_fname = '../output/JRA3Q_PRES_1969_2022_ALL_movave.dat'
+    output_fname = '../output/TEST.dat'
+&END
+
+&recinfo
+    varnum = 1
+    irec_init = 1
+    !tnum = 78892
+    tnum = 200
+&END
+
+&grid
+    nx = 1
+    ny = 1
+    nz = 1
+&END
+
+&filter
+    !filterlen = 61
+    filterlen = 21
+    filtername = 'simple'
+&END
+
