@@ -2,7 +2,8 @@ EXE = EXE
 OBJS = NaNchecker.o fileio.o globals.o namelist.o debugger.o movave_filter.o movave.o main.o
 
 FC = ifort
-FLAGS = -warn all -O0 -assume byterecl -convert little_endian
+FLAGS = -warn all -O0 -assume byterecl -convert little_endian -traceback -check all
+#FLAGS = -warn all -O0 -assume byterecl -convert little_endian -traceback
 
 %.o : %.f90
 	${FC} -c $< ${FLAGS}
