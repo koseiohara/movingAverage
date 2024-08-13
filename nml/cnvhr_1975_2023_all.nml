@@ -1,0 +1,22 @@
+&files
+    input_fname  = '/mnt/jet11/kosei/JRA/JRA3Q/ALL/JRA3Q_1975_2023/JRA3Q_1975_2023_ALL_CNVHR.bin'
+    output_fname = '../output/JRA3Q_1975_2023_ALL_CNVHR_movave_2records_filter.bin'
+&END
+
+&recinfo
+    varnum = 1
+    irec_init = 1
+    tnum = 71588
+&END
+
+&grid
+    nx = 288
+    ny = 145
+    nz = 45
+&END
+
+&filter
+    filterlen = 2
+    filtername = 'simple'
+&END
+
