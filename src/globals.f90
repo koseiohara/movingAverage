@@ -9,6 +9,7 @@ module globals
     integer, save :: nz
 
     integer, save :: filterlen
+    integer, save :: filtype_specifier
     character(32), save :: filtername
 
     integer, save :: varnum

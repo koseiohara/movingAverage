@@ -1,13 +1,13 @@
 module movave
 
-    use fileio       , only : finfo                       , &
-                            & fopen ,fclose, fread, fwrite, &
+    use fileio       , only : finfo                                   , &
+                            & fopen ,fclose, fread, fwrite            , &
                             & reset_record, get_record
-    use debugger     , only : debug_open, debug_close     , &
+    use debugger     , only : debug_open, debug_close                 , &
                             & debug_write, debug_linebreak
-    use globals      , only : kp, nx, ny, nz              , &
-                            & filterlen, filtername       , &
-                            & varnum, irec_init, tnum     , &
+    use globals      , only : kp, nx, ny, nz                          , &
+                            & filterlen, filtype_specifier, filtername, &
+                            & varnum, irec_init, tnum                 , &
                             & input_fname, output_fname
     use movave_filter, only : filter, get_edgeCorrector
 
@@ -188,7 +188,7 @@ module movave
         !! Get Filter
         call filter(weight(1:filterlen))  !! OUT
 
-        tend = tnum - (filterlen+1)
+        tend = tnum - filterlen + 1
 
         center_rec = get_record(input_file)
 
@@ -243,7 +243,7 @@ module movave
 
         winglen = ishft(filterlen, -1)
 
-        records(1:filterlen) = [(center_record + i*varnum, i=-winglen, winglen)]
+        records(1:filterlen) = [(center_record + i*varnum, i=-winglen, winglen+filtype_specifier)]
 
     end subroutine chooseRecords
 

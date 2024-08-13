@@ -1,8 +1,8 @@
 module namelist
 
-    use globals, only : nx, ny, nz             , &
-                      & filterlen, filtername  , &
-                      & varnum, irec_init, tnum, &
+    use globals, only : nx, ny, nz                                , &
+                      & filterlen, filtype_specifier, filtername  , &
+                      & varnum, irec_init, tnum                   , &
                       & input_fname, output_fname
 
     implicit none
@@ -44,6 +44,8 @@ module namelist
 
 
         call checker()
+
+        filtype_specifier = - mod(filterlen+1, 2)
 
     end subroutine read_nml
     
@@ -120,16 +122,16 @@ module namelist
             ERROR STOP
         endif
 
-        if (mod(filterlen,2) == 0) then
-            write(*,*)
-            write(*,'(a)')    'InputError ------------------------------------------------'
-            write(*,'(a)')    '|   Invalid filterlen value in namelist'
-            write(*,'(a)')    '|   filterlen must be an odd number, but input is even'
-            write(*,'(a,i0)') '|   Input : filterlen=', filterlen
-            write(*,'(a)')    '-----------------------------------------------------------'
+        !if (mod(filterlen,2) == 0) then
+            !write(*,*)
+            !write(*,'(a)')    'InputError ------------------------------------------------'
+            !write(*,'(a)')    '|   Invalid filterlen value in namelist'
+            !write(*,'(a)')    '|   filterlen must be an odd number, but input is even'
+            !write(*,'(a,i0)') '|   Input : filterlen=', filterlen
+            !write(*,'(a)')    '-----------------------------------------------------------'
 
-            ERROR STOP
-        endif
+            !ERROR STOP
+        !endif
 
         if (filtername /= 'simple') then
             write(*,*)
