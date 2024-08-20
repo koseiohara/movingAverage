@@ -15,6 +15,10 @@ module movave_filter
 
         if (filtername == 'simple') then
             weight(1:filterlen) = simpleFilter()
+            return
+        else
+            write(*,*) 'Invalid filtername'
+            ERROR STOP
         endif
 
     end subroutine filter

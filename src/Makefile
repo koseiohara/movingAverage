@@ -3,7 +3,7 @@ OBJS = NaNchecker.o fileio.o globals.o namelist.o debugger.o movave_filter.o mov
 
 FC = ifort
 FLAGS = -warn all -O0 -assume byterecl -convert little_endian -traceback -check all
-#FLAGS = -warn all -O0 -assume byterecl -convert little_endian -traceback
+FLAGS = -warn all -O0 -assume byterecl -convert little_endian -traceback
 
 %.o : %.f90
 	${FC} -c $< ${FLAGS}

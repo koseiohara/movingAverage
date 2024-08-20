@@ -96,16 +96,16 @@ module movave
         !! Get Filter
         call filter(weight(1:filterlen))  !! OUT
 
-        if (whichSide == 'start') then
-            filter_firstIndex = edgeLen+1
-            filter_lastIndex  = filterLen
-        else if (whichSide == 'end') then
-            filter_firstIndex = 1
-            filter_lastIndex  = edgeLen+1
-        else
-            write(*,'(a)') 'Error : Invalid argument in whichSide'
-            ERROR STOP
-        endif
+        !if (whichSide == 'start') then
+        !    filter_firstIndex = edgeLen+1
+        !    filter_lastIndex  = filterLen
+        !else if (whichSide == 'end') then
+        !    filter_firstIndex = 1
+        !    filter_lastIndex  = edgeLen+1
+        !else
+        !    write(*,'(a)') 'Error : Invalid argument in whichSide'
+        !    ERROR STOP
+        !endif
 
         center_rec = get_record(input_file)
 
