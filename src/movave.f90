@@ -248,8 +248,12 @@ module movave
     end subroutine chooseRecords
 
 
-    subroutine mklog(t)
-        integer, intent(in) :: t
+    subroutine mklog(record)
+        integer, intent(in) :: record
+
+        integer :: t
+
+        t = (record - irec_init) / varnum + 1
 
         write(*,'(a,i8,a,i8)') 'COMPLETE ', t, ' / ', tnum
 
