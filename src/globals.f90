@@ -4,20 +4,24 @@ module globals
 
     integer, parameter :: kp = 4
 
-    integer, save :: nx
-    integer, save :: ny
-    integer, save :: nz
+    integer :: nx
+    integer :: ny
+    integer :: nz
 
-    integer, save :: filterlen
-    integer, save :: filtype_specifier
-    character(32), save :: filtername
+    integer :: filterlen
+    integer :: filtype_specifier
+    character(32) :: filtername
 
-    integer, save :: varnum
-    integer, save :: irec_init
-    integer, save :: tnum
+    integer :: varnum
+    integer :: irec_init
+    integer :: tnum
 
-    character(128), save :: input_fname
-    character(128), save :: output_fname
+    character(128) :: input_fname
+    character(128) :: output_fname
+
+    character(16) :: variable
+    character(16) :: datetime_init
+
 
 end module globals
 

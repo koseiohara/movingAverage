@@ -1,14 +1,19 @@
 module namelist
 
-    use globals, only : nx, ny, nz                                , &
-                      & filterlen, filtype_specifier, filtername  , &
-                      & varnum, irec_init, tnum                   , &
-                      & input_fname, output_fname
+    use globals, only : nx, ny, nz                                     , &
+                      & filterlen, filtype_specifier, filtername       , &
+                      & varnum, irec_init, tnum                        , &
+                      & input_fname, output_fname                      , &
+                      & variable, datetime_init, options               , &
+                      & nzmax, xmin, ymin, xstep, ystep, zlevels, tstep
 
     implicit none
 
     private
     public :: read_nml, minuteTaker
+
+    real(4), parameter :: real32_error = -9999.
+    integer, parameter :: int32_error  = -9999
 
     contains
 
@@ -17,10 +22,11 @@ module namelist
 
         integer, parameter :: nml_unit = 5
 
-        namelist / grid / nx, ny, nz
-        namelist / filter / filterlen, filtername
+        namelist / grid    / nx, ny, nz
+        namelist / filter  / filterlen, filtername
         namelist / recinfo / varnum, irec_init, tnum
-        namelist / files / input_fname, output_fname
+        namelist / files   / input_fname, output_fname
+        namelist / control / variable, datetime_init, options, xmin, ymin, xstep, ystep, zlevels, tstep
 
         nx = 0
         ny = 0
@@ -36,12 +42,22 @@ module namelist
         input_fname  = ''
         output_fname = ''
 
+        variable      = ''
+        datetime_init = ''
+        options       = ''
+        xmin          = real32_error
+        ymin          = real32_error
+        xstep         = real32_error
+        ystep         = real32_error
+        zlevels(1:nzmax) = real32_error
+        tstep         = int32_error
+
 
         read(nml_unit, nml=  files)
         read(nml_unit, nml=recinfo)
         read(nml_unit, nml=   grid)
         read(nml_unit, nml= filter)
-
+        read(nml_unit, nml=control)
 
         call checker()
 
@@ -79,46 +95,34 @@ module namelist
     subroutine checker()
         
         if (nx <= 0) then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid nx value in namelist'
-            write(*,'(a)')    '|   nx must be more than 0'
-            write(*,'(a,i0)') '|   Input : nx=', nx
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "nx" value in namelist'
+            write(0,'(A)')    '"nx" must be more than 0'
+            write(0,'(A,I0)') 'Input : nx=', nx
             ERROR STOP
         endif
 
         if (ny <= 0) then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid ny value in namelist'
-            write(*,'(a)')    '|   ny must be more than 0'
-            write(*,'(a,i0)') '|   Input : ny=', ny
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "ny" value in namelist'
+            write(0,'(A)')    '"ny" must be more than 0'
+            write(0,'(A,I0)') 'Input : ny=', ny
             ERROR STOP
         endif
 
-        if (nz <= 0) then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid nz value in namelist'
-            write(*,'(a)')    '|   nz must be more than 0'
-            write(*,'(a,i0)') '|   Input : nz=', nz
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+        if (nz <= 0 .OR. nz > nzmax) then
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "nz" value in namelist'
+            write(0,'(A,I0)') '"nz" must be between 1 and ', nzmax
+            write(0,'(A,I0)') 'Input : nz=', nz
             ERROR STOP
         endif
 
         if (filterlen <= 0) then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid filterlen value in namelist'
-            write(*,'(a)')    '|   filterlen must be more than 0'
-            write(*,'(a,i0)') '|   Input : filterlen=', filterlen
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "filterlen" value in namelist'
+            write(0,'(A)')    '"filterlen" must be more than 0'
+            write(0,'(A,I0)') 'Input : filterlen=', filterlen
             ERROR STOP
         endif
 
@@ -134,67 +138,112 @@ module namelist
         !endif
 
         if (filtername /= 'simple') then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid filtername in namelist'
-            write(*,'(a)')    '|   Input : filtername=' // trim(filtername)
-            write(*,'(a)')    '|   Available Filter Name are below :'
-            write(*,'(a)')    '|       "simple"'
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "filtername" in namelist'
+            write(0,'(A)')    'Input : filtername=' // trim(filtername)
+            write(0,'(A)')    'Available Filter Name are below :'
+            write(0,'(A)')    '- "simple"'
             ERROR STOP
         endif
 
         if (varnum <= 0) then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid varnum value in namelist'
-            write(*,'(a)')    '|   varnum must be more than 0'
-            write(*,'(a,i0)') '|   Input : varnum=', varnum
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "varnum" value in namelist'
+            write(0,'(A)')    '"varnum" must be more than 0'
+            write(0,'(A,I0)') 'Input : varnum=', varnum
             ERROR STOP
         endif
 
         if (irec_init<= 0) then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid irec_init value in namelist'
-            write(*,'(a)')    '|   irec_init must be more than 0'
-            write(*,'(a,i0)') '|   Input : irec_init=', irec_init
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "irec_init" value in namelist'
+            write(0,'(A)')    '"irec_init" must be more than 0'
+            write(0,'(A,I0)') 'Input : irec_init=', irec_init
             ERROR STOP
         endif
 
         if (tnum < filterlen) then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid tnum value in namelist'
-            write(*,'(a)')    '|   tnum must be equal or more than filterlen'
-            write(*,'(a,i0)') '|   Input : tnum=', tnum
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "tnum" value in namelist'
+            write(0,'(A)')    '"tnum" must be equal or more than "filterlen"'
+            write(0,'(A,I0)') 'Input : tnum=', tnum
             ERROR STOP
         endif
 
-        if (input_fname == '') then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid input_fname in namelist'
-            write(*,'(a)')    '|   Input_fname is not specified'
-            write(*,'(a)')    '-----------------------------------------------------------'
-
+        if (trim(input_fname) == '') then
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "input_fname" in namelist'
+            write(0,'(A)')    '"Input_fname" is not specified'
             ERROR STOP
         endif
 
-        if (output_fname == '') then
-            write(*,*)
-            write(*,'(a)')    'InputError -----------------------------------------------'
-            write(*,'(a)')    '|   Invalid output_fname in namelist'
-            write(*,'(a)')    '|   output_fname is not specified'
-            write(*,'(a)')    '-----------------------------------------------------------'
+        if (trim(output_fname) == '') then
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "output_fname" in namelist'
+            write(0,'(A)')    '"output_fname" is not specified'
+            ERROR STOP
+        endif
 
+        if (trim(variable) == '') then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "variable" : "variable" is not specified'
+            ERROR STOP
+        endif
+
+        if (trim(datetime_init) == '') then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "datetime_init" : "datetime_init" is not specified'
+            ERROR STOP
+        endif
+
+        if (xmin == real32_error) then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "xmin" : "xmin" is not specified'
+            ERROR STOP
+        endif
+
+        if (ymin == real32_error) then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "ymin" : "ymin" is not specified'
+            ERROR STOP
+        endif
+        
+        if (xstep == real32_error) then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "xstep" : "xstep" is not specified'
+            ERROR STOP
+        endif
+        
+        if (ystep == real32_error) then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "ysetp" : "ystep" is not specified'
+            ERROR STOP
+        endif
+        
+        if (all(zlevels(1:nzmax) == real32_error)) then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "zlevels" : "zlevels" is not specified'
+            ERROR STOP
+        endif
+        
+        if (any(zlevels(1:nz) < 0) then
+            write(0,'(A)')               '<ERROR STOP>'
+            write(0,'(A)')               'Invalid "zlevels"'
+            write(0,'(A)')               '"zlevels" contains negative value'
+            write(0,'(A,*(F0.3,:,","))') 'zlevels(1:nz) = ', zlevels(1:nz)
+            ERROR STOP
+        endif
+        
+        if (tstep == int32_error) then
+            write(0,'(A)') '<ERROR STOP>'
+            write(0,'(A)') 'Invalid "tstep" : "tstep" is not specified'
+            ERROR STOP
+        endif
+
+        if (tstep < 0.) then
+            write(0,'(A)')    '<ERROR STOP>'
+            write(0,'(A)')    'Invalid "tstep" value'
+            write(0,'(A,I0)') '"tstep" must be a positive value, but input is ', tstep
             ERROR STOP
         endif
 
