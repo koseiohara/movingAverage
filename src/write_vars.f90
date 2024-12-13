@@ -15,7 +15,7 @@ module write_vars
         integer, intent(in) :: unit
         integer, intent(in) :: znum
 
-        character(32) :: variable_uppere
+        character(32) :: variable_upper
 
         call to_upper(variable      , &  !! IN
                     & variable_upper  )  !! OUT

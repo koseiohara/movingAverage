@@ -2,7 +2,7 @@ program main
 
     use globals   , only : nx, ny, nz, filterlen, tnum             , &
                          & input_fname, output_fname               , &
-                         & variable, datetimwe_init, options       , &
+                         & variable, datetime_init, options       , &
                          & xmin, ymin, xstep, ystep, zlevels, tstep
     use namelist  , only : read_nml, minuteTaker
     use mkctl     , only : auto_ctl
@@ -15,7 +15,6 @@ program main
     real(4) :: end_time
 
     character(128) :: title
-    character(128) :: options
     character(8)   :: tstep_char
 
     write(*,'(A)') 'START PROCESS'

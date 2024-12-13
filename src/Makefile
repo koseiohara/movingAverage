@@ -1,5 +1,15 @@
 EXE = EXE
-OBJS = NaNchecker.o fileio.o globals.o namelist.o debugger.o movave_filter.o movave.o main.o
+OBJS = NaNchecker.o    \
+       fileio.o	       \
+	   CaseConverter.o \
+	   globals.o 	   \
+	   namelist.o      \
+	   write_vars.o    \
+	   mkctl.o         \
+	   debugger.o      \
+	   movave_filter.o \
+	   movave.o        \
+	   main.o
 
 FC = ifort
 FLAGS = -warn all -O0 -assume byterecl -convert little_endian -traceback -check all

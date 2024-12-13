@@ -226,7 +226,7 @@ module namelist
             ERROR STOP
         endif
         
-        if (any(zlevels(1:nz) < 0) then
+        if (any(zlevels(1:nz) < 0)) then
             write(0,'(A)')               '<ERROR STOP>'
             write(0,'(A)')               'Invalid "zlevels"'
             write(0,'(A)')               '"zlevels" contains negative value'

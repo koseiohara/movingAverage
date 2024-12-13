@@ -19,8 +19,17 @@ module globals
     character(128) :: input_fname
     character(128) :: output_fname
 
-    character(16) :: variable
-    character(16) :: datetime_init
+    character(16)  :: variable
+    character(16)  :: datetime_init
+    character(256) :: options
+
+    integer, parameter :: nzmax = 100
+    real(4) :: xmin
+    real(4) :: ymin
+    real(4) :: xstep
+    real(4) :: ystep
+    real(4) :: zlevels(nzmax)
+    integer :: tstep
 
 
 end module globals
