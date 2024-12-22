@@ -1,0 +1,22 @@
+&files
+    input_fname  = '/mnt/jet11/kosei/JRA/undef_filter/output/JRA3Q/JRA3Q_1980_2023_ALL_TTSWR_undef_0.bin'
+    output_fname = '../output/JRA3Q_1980_2023_ALL_TTSWR_LEV_EXTRACT_movave_2records_filter.bin'
+&END
+
+&recinfo
+    varnum = 1
+    irec_init = 1
+    tnum = 64240
+&END
+
+&grid
+    nx = 288
+    ny = 145
+    nz = 45
+&END
+
+&filter
+    filterlen  = 2
+    filtername = 'simple'
+&END
+

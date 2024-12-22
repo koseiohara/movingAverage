@@ -231,6 +231,15 @@ module namelist
             write(0,'(A)')               'Invalid "zlevels"'
             write(0,'(A)')               '"zlevels" contains negative value'
             write(0,'(A,*(F0.3,:,","))') 'zlevels(1:nz) = ', zlevels(1:nz)
+            write(0,'(A,F0.3,A)')        'Note : ', real32_error, ' is the default value'
+            ERROR STOP
+        endif
+        
+        if (zlevels(nz+1) /= real32_error) then
+            write(0,'(A)')      '<ERROR STOP>'
+            write(0,'(A)')      'Invalid "zlevels"'
+            write(0,'(A)')      'The provided "zlevels" is bigger than "nz"'
+            write(0,'(A,F0.3)') 'zlevels(nz+1)=', zlevels(nz+1)
             ERROR STOP
         endif
         

@@ -5,10 +5,10 @@
 #PBS -j oe
 #PBS -l nodes=1:ppn=1
 
-DATASET="JRA3Q"
-INI=1980
-FIN=2023
-VAR="VDFHR"
+DATASET="JRA55"
+INI=1990
+FIN=2020
+VAR="VVEL"
 #NOW=$(date "+%Y%m%d_%H%M%S")
 RESULT="../output/result_${DATASET}_${INI}_${FIN}_${VAR}.txt"
 
