@@ -18,5 +18,6 @@
 &filter
     filterlen  = 2
     filtername = 'simple'
+    even_center = 'backward'
 &END
 

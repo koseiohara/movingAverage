@@ -18,6 +18,7 @@
 &filter
     filterlen  = 2
     filtername = 'simple'
+    even_center = 'forward'
 /
 
 &control
