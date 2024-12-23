@@ -11,6 +11,8 @@ module globals
     integer :: filterlen
     integer :: filtype_specifier
     character(32) :: filtername
+    logical :: odd
+    character(16) :: even_center
 
     integer :: varnum
     integer :: irec_init

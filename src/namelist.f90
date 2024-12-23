@@ -1,10 +1,10 @@
 module namelist
 
-    use globals, only : nx, ny, nz                                     , &
-                      & filterlen, filtype_specifier, filtername       , &
-                      & varnum, irec_init, tnum                        , &
-                      & input_fname, output_fname                      , &
-                      & variable, datetime_init, options               , &
+    use globals, only : nx, ny, nz                                                , &
+                      & filterlen, filtype_specifier, filtername, odd, even_center, &
+                      & varnum, irec_init, tnum                                   , &
+                      & input_fname, output_fname                                 , &
+                      & variable, datetime_init, options                          , &
                       & nzmax, xmin, ymin, xstep, ystep, zlevels, tstep
 
     implicit none
@@ -23,7 +23,7 @@ module namelist
         integer, parameter :: nml_unit = 5
 
         namelist / grid    / nx, ny, nz
-        namelist / filter  / filterlen, filtername
+        namelist / filter  / filterlen, filtername, even_center
         namelist / recinfo / varnum, irec_init, tnum
         namelist / files   / input_fname, output_fname
         namelist / control / variable, datetime_init, options, xmin, ymin, xstep, ystep, zlevels, tstep
@@ -32,8 +32,9 @@ module namelist
         ny = 0
         nz = 0
 
-        filterlen  = 0
-        filtername = ''
+        filterlen   = 0
+        filtername  = ''
+        even_center = ''
 
         varnum    = 0
         irec_init = 0
@@ -62,6 +63,7 @@ module namelist
         call checker()
 
         filtype_specifier = - mod(filterlen+1, 2)
+        odd = (mod(filterlen, 2) == 1)
 
     end subroutine read_nml
     
@@ -144,6 +146,16 @@ module namelist
             write(0,'(A)')    'Available Filter Name are below :'
             write(0,'(A)')    '- "simple"'
             ERROR STOP
+        endif
+
+        if (mod(filterlen,2) == 0) then
+            if (even_center /= 'forward' .AND. even_center /= 'backward') then
+                write(0,'(A)')    '<ERROR STOP>'
+                write(0,'(A)')    'Invalid "even_center" in namelist'
+                write(0,'(A)')    '"forward" and "backward" are available'
+                write(0,'(A)')    'Input : even_center=' // trim(even_center)
+                ERROR STOP
+            endif
         endif
 
         if (varnum <= 0) then

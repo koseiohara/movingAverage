@@ -1,8 +1,8 @@
 program main
 
-    use globals   , only : nx, ny, nz, filterlen, tnum             , &
+    use globals   , only : nx, ny, nz, filterlen, even_center, tnum, &
                          & input_fname, output_fname               , &
-                         & variable, datetime_init, options       , &
+                         & variable, datetime_init, options        , &
                          & xmin, ymin, xstep, ystep, zlevels, tstep
     use namelist  , only : read_nml, minuteTaker
     use mkctl     , only : auto_ctl
@@ -14,7 +14,7 @@ program main
     real(4) :: start_time
     real(4) :: end_time
 
-    character(128) :: title
+    character(256) :: title
     character(8)   :: tstep_char
 
     write(*,'(A)') 'START PROCESS'
@@ -28,6 +28,9 @@ program main
     call movingAverage()
 
     write(title,'(I0,A)') filterlen, '-records Moving Average of ' // trim(variable) // ' in t-direction'
+    if (mod(filterlen,2) == 0) then
+        title = trim(title) //  ' with ' // trim(even_center) // ' type filter'
+    endif
     title = trim(title) // ': Generated from ' // trim(input_fname)
     write(tstep_char,'(I0,"hr")') tstep
     call auto_ctl(bin       =output_fname , &  !! IN

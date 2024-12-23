@@ -18,5 +18,5 @@ ulimit -s unlimited
 
 cd /mnt/jet11/kosei/mim/energetics/movingAverage/src
 
-./EXE < ${NAMELIST} >> ${RESULT} 2>&1
+./EXE < ${NAMELIST} > ${RESULT} 2>&1
 
